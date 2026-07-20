@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dragon Ball Z — Beyond The Limit</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#FF6B00;--accent2:#FFD700;
+  --dark:#0A0503;--mid:#1A0C06;--text:#F5E6D0;
+}
+html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;
+  background:linear-gradient(to bottom,rgba(10,5,3,0.97),transparent);
+  backdrop-filter:blur(4px);
+}
+.nav-logo{
+  font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:900;
+  letter-spacing:0.15em;text-transform:uppercase;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-decoration:none;
+}
+.nav-back{
+  color:rgba(245,230,208,0.5);text-decoration:none;
+  font-size:0.8rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
+  transition:color 0.2s;display:flex;align-items:center;gap:0.5rem;
+}
+.nav-back:hover{color:var(--accent);}
+.nav-back::before{content:'←';}
+nav ul{list-style:none;display:flex;gap:2rem;}
+nav a.nl{
+  color:var(--text);text-decoration:none;
+  font-size:0.85rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;
+  transition:color 0.2s;
+}
+nav a.nl:hover{color:var(--accent2);}
+
+#hero{
+  position:relative;z-index:10;min-height:100vh;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 6rem;overflow:hidden;
+}
+#hero-canvas{
+  position:absolute;right:-5%;top:50%;transform:translateY(-50%);
+  width:55%;height:80%;opacity:0.7;pointer-events:none;
+}
+.badge{
+  font-size:0.75rem;font-weight:700;letter-spacing:0.45em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.8rem;
+}
+.badge::before{content:'';display:block;width:36px;height:2px;background:var(--accent);}
+h1{
+  font-family:'Oswald',sans-serif;
+  font-size:clamp(4rem,10vw,9rem);font-weight:900;
+  line-height:0.88;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:2rem;
+}
+h1 .w1{display:block;background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+h1 .w2{display:block;-webkit-text-stroke:2px var(--accent);color:transparent;font-size:0.55em;letter-spacing:0.18em;}
+.hero-sub{font-size:1.1rem;color:rgba(245,230,208,0.65);max-width:460px;line-height:1.7;margin-bottom:3rem;}
+.ki-bar{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:2rem;}
+.ki-label{font-size:0.7rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);}
+.ki-track{width:260px;height:3px;background:rgba(255,107,0,0.15);border-radius:2px;}
+.ki-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;animation:kip 2.5s ease-in-out infinite alternate;box-shadow:0 0 10px var(--accent);}
+@keyframes kip{from{width:60%}to{width:100%}}
+.btn-row{display:flex;gap:1rem;}
+.btn-p{
+  background:linear-gradient(135deg,var(--accent),#CC3D00);color:#fff;
+  font-family:'Oswald',sans-serif;font-size:0.95rem;font-weight:700;
+  letter-spacing:0.18em;text-transform:uppercase;
+  padding:0.9rem 2.2rem;border:none;cursor:pointer;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  box-shadow:0 0 25px rgba(255,107,0,0.4);transition:all 0.2s;
+  text-decoration:none;display:inline-flex;align-items:center;
+}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(255,107,0,0.7);}
+
+.section{position:relative;z-index:10;padding:5rem 6rem;}
+.section-label{font-size:0.72rem;font-weight:700;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent2);margin-bottom:2.5rem;display:flex;align-items:center;gap:1rem;}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--accent2),transparent);max-width:180px;}
+.section-h2{font-family:'Oswald',sans-serif;font-size:clamp(2.5rem,4vw,4rem);font-weight:900;text-transform:uppercase;margin-bottom:3rem;line-height:1;}
+.section-h2 span{background:linear-gradient(135deg,var(--accent2),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+.sagas-bg{background:linear-gradient(to bottom,transparent,var(--mid) 10%,var(--mid) 90%,transparent);}
+.sagas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5px;border:1.5px solid rgba(255,107,0,0.15);}
+.saga-tile{
+  padding:2.5rem 2rem;background:rgba(26,12,6,0.8);
+  cursor:pointer;transition:background 0.3s;position:relative;overflow:hidden;
+}
+.saga-tile::before{content:'';position:absolute;top:0;left:0;width:3px;height:0%;background:var(--accent);transition:height 0.4s ease;}
+.saga-tile:hover::before{height:100%;}
+.saga-tile:hover{background:rgba(40,15,6,0.95);}
+.snum{font-family:'Oswald',sans-serif;font-size:3.5rem;font-weight:900;color:rgba(255,107,0,0.1);line-height:1;margin-bottom:0.8rem;}
+.stitle{font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;margin-bottom:0.5rem;}
+.sdesc{font-size:0.9rem;color:rgba(245,230,208,0.55);line-height:1.6;}
+.spower{margin-top:1rem;font-size:0.72rem;font-weight:700;letter-spacing:0.2em;color:var(--accent);text-transform:uppercase;}
+
+.t-list{max-width:860px;margin:0 auto;}
+.t-item{
+  display:grid;grid-template-columns:70px 1fr auto;
+  align-items:center;gap:2rem;
+  padding:1.8rem 0;border-bottom:1px solid rgba(255,107,0,0.12);
+  cursor:pointer;transition:padding-left 0.3s;
+}
+.t-item:hover{padding-left:1rem;}
+.tidx{font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:900;color:rgba(255,107,0,0.2);}
+.tname{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;}
+.tdetail{font-size:0.88rem;color:rgba(245,230,208,0.5);}
+.tmult{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;text-align:right;white-space:nowrap;}
+
+.chars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;}
+.char-card{
+  padding:2rem 1.5rem;
+  border:1px solid rgba(255,107,0,0.12);
+  background:rgba(26,12,6,0.5);
+  transition:border-color 0.3s,transform 0.3s;
+  position:relative;overflow:hidden;
+}
+.char-card:hover{border-color:var(--accent);transform:translateY(-4px);}
+.char-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transform:scaleX(0);transform-origin:left;transition:transform 0.3s;
+}
+.char-card:hover::after{transform:scaleX(1);}
+.char-race{font-size:0.68rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem;}
+.char-name{font-family:'Oswald',sans-serif;font-size:1.8rem;font-weight:900;text-transform:uppercase;margin-bottom:0.4rem;}
+.char-role{font-size:0.85rem;color:rgba(245,230,208,0.5);}
+.char-pow{margin-top:1rem;font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;color:var(--accent2);}
+
+footer{position:relative;z-index:10;padding:2.5rem 6rem;border-top:1px solid rgba(255,107,0,0.1);display:flex;align-items:center;justify-content:space-between;background:var(--dark);}
+.fl{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:900;letter-spacing:0.15em;text-transform:uppercase;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+footer p{font-size:0.78rem;color:rgba(245,230,208,0.3);letter-spacing:0.1em;}
+.nav-links{display:flex;gap:1.5rem;}
+.nav-series a{
+  color:rgba(245,230,208,0.4);text-decoration:none;
+  font-family:'Oswald',sans-serif;font-size:0.8rem;font-weight:700;
+  letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;
+}
+.nav-series a:hover{color:var(--accent);}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.lightning{position:fixed;inset:0;background:rgba(255,255,255,0.03);z-index:5;pointer-events:none;opacity:0;animation:lfk 10s infinite;}
+@keyframes lfk{0%,93%,100%{opacity:0}94%{opacity:1}95%{opacity:0}97%{opacity:0.4}98%{opacity:0}}
+@media(max-width:768px){
+  #hero,footer{padding:2rem}
+  .section{padding:3rem 2rem}
+  #hero-canvas{display:none}
+  h1{font-size:3.5rem}
+  nav{padding:1rem 1.5rem}
+}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div class="lightning"></div>
+
+<nav>
+  <a href="index.html" class="nav-back">All Series</a>
+  <a href="index.html" class="nav-logo">Dragon Ball Z</a>
+  <div class="nav-series">
+    <div class="nav-links">
+      <a href="super.html" class="nl">Super</a>
+      <a href="gt.html" class="nl">GT</a>
+      <a href="heroes.html" class="nl">Heroes</a>
+    </div>
+  </div>
+</nav>
+
+
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="badge">1989 — 1996 · Toei Animation</div>
+  <h1><span class="w1">Dragon Ball</span><span class="w2">Z — Beyond The Limit</span></h1>
+  <p class="hero-sub">Saiyans from across the stars. Ancient evils from forgotten ages. The Earth's warriors pushed past every breaking point.</p>
+  <div class="ki-bar">
+    <div class="ki-label">Power Level — Exceeds 9000</div>
+    <div class="ki-track"><div class="ki-fill"></div></div>
+  </div>
+  <div class="btn-row">
+    <a href="#sagas" class="btn-p">Explore Sagas</a>
+  </div>
+</section>
+
+<!-- SAGAS -->
+<section class="section sagas-bg" id="sagas">
+  <div class="section-label">Chapter by Chapter</div>
+  <h2 class="section-h2 reveal">The <span>Sagas</span></h2>
+  <div class="sagas-grid">
+    <div class="saga-tile reveal"><div class="snum">01</div><div class="stitle">Saiyan Saga</div><div class="sdesc">Raditz arrives. Goku learns his true heritage. Vegeta and Nappa descend on Earth.</div><div class="spower">Max Power: 18,000</div></div>
+    <div class="saga-tile reveal"><div class="snum">02</div><div class="stitle">Namek Saga</div><div class="sdesc">A desperate race to Planet Namek. The Ginyu Force stands in the way of the Dragon Balls.</div><div class="spower">Max Power: 530,000</div></div>
+    <div class="saga-tile reveal"><div class="snum">03</div><div class="stitle">Frieza Saga</div><div class="sdesc">Krillin falls. Rage ignites. For the first time in 1,000 years — a Super Saiyan walks the universe.</div><div class="spower">Max Power: 150,000,000</div></div>
+    <div class="saga-tile reveal"><div class="snum">04</div><div class="stitle">Android Saga</div><div class="sdesc">The future bleeds into the present. Dr. Gero's creations tear apart everything.</div><div class="spower">Max Power: 1,000,000,000+</div></div>
+    <div class="saga-tile reveal"><div class="snum">05</div><div class="stitle">Cell Saga</div><div class="sdesc">The perfect lifeform achieves his final form. Father and son stand together in a final Kamehameha.</div><div class="spower">Max Power: 10,000,000,000+</div></div>
+    <div class="saga-tile reveal"><div class="snum">06</div><div class="stitle">Majin Buu Saga</div><div class="sdesc">An ancient evil unleashed. Magic, fusion, and every human on Earth's energy collide in one final blow.</div><div class="spower">Max Power: Immeasurable</div></div>
+  </div>
+</section>
+
+<!-- TRANSFORMATIONS -->
+<section class="section">
+  <div class="section-label">Ascension Path</div>
+  <h2 class="section-h2 reveal" style="text-align:center">Super Saiyan <span>Forms</span></h2>
+  <div class="t-list">
+    <div class="t-item reveal"><div class="tidx">01</div><div><div class="tname" style="color:#FFD700">Super Saiyan</div><div class="tdetail">Golden hair, emerald eyes. Born from pure grief and rage over Krillin's death.</div></div><div class="tmult" style="color:#FFD700">×50</div></div>
+    <div class="t-item reveal"><div class="tidx">02</div><div><div class="tname" style="color:#FFE566">Super Saiyan 2</div><div class="tdetail">Lightning crackles around the body. Gohan's hidden power finally unleashed against Cell.</div></div><div class="tmult" style="color:#FFE566">×100</div></div>
+    <div class="t-item reveal"><div class="tidx">03</div><div><div class="tname" style="color:#FFEEAA">Super Saiyan 3</div><div class="tdetail">Floor-length golden hair. The earth trembles. Goku burns through his remaining life.</div></div><div class="tmult" style="color:#FFEEAA">×400</div></div>
+    <div class="t-item reveal"><div class="tidx">04</div><div><div class="tname" style="color:#FF4466">Super Saiyan 4</div><div class="tdetail">Primal Saiyan power awakened through the Great Ape transformation. Red fur, black hair.</div></div><div class="tmult" style="color:#FF4466">×?</div></div>
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section class="section sagas-bg">
+  <div class="section-label">Z Warriors</div>
+  <h2 class="section-h2 reveal">Key <span>Characters</span></h2>
+  <div class="chars-grid">
+    <div class="char-card reveal"><div class="char-race">Saiyan</div><div class="char-name">Goku</div><div class="char-role">Earth's Mightiest Warrior · Kakarot</div><div class="char-pow">Power: Beyond Measure</div></div>
+    <div class="char-card reveal"><div class="char-race">Saiyan</div><div class="char-name">Vegeta</div><div class="char-role">Prince of All Saiyans</div><div class="char-pow">Power: 530,000 → ∞</div></div>
+    <div class="char-card reveal"><div class="char-race">Half-Saiyan</div><div class="char-name">Gohan</div><div class="char-role">Scholar & Hidden Potential</div><div class="char-pow">Potential: Infinite</div></div>
+    <div class="char-card reveal"><div class="char-race">Namekian</div><div class="char-name">Piccolo</div><div class="char-role">Warrior & Mentor</div><div class="char-pow">Power: 3,500,000</div></div>
+    <div class="char-card reveal"><div class="char-race">Human</div><div class="char-name">Krillin</div><div class="char-role">Earth's Strongest Human</div><div class="char-pow">Power: 75,000</div></div>
+    <div class="char-card reveal"><div class="char-race">Bio-Android</div><div class="char-name">Cell</div><div class="char-role">The Perfect Life Form</div><div class="char-pow">Power: Immeasurable</div></div>
+    <div class="char-card reveal"><div class="char-race">Majin</div><div class="char-name">Buu</div><div class="char-role">Ancient Magic Demon</div><div class="char-pow">Power: Godlike</div></div>
+    <div class="char-card reveal"><div class="char-race">Icejin</div><div class="char-name">Frieza</div><div class="char-role">Galactic Tyrant</div><div class="char-pow">Power: 120,000,000</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="fl">Dragon Ball Z</div>
+  <p>Fan Tribute · © Akira Toriyama · Toei Animation</p>
+  <a href="index.html" style="color:rgba(245,230,208,0.4);text-decoration:none;font-size:0.78rem;letter-spacing:0.15em;font-weight:700;text-transform:uppercase;transition:color 0.2s" onmouseover="this.style.color='#FF6B00'" onmouseout="this.style.color='rgba(245,230,208,0.4)'">← Back to Universe</a>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// BG particles
+(function(){
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  window.addEventListener('resize',resize);resize();
+  for(let i=0;i<180;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+0.2,vx:(Math.random()-0.5)*0.2,vy:-(Math.random()*0.3+0.05),a:Math.random()*0.7+0.2,c:Math.random()<0.6?`rgba(255,${107+Math.floor(Math.random()*60)},0,`:`rgba(255,${200+Math.floor(Math.random()*55)},0,`});
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.y<-5){p.y=H+5;p.x=Math.random()*W;}if(p.x<0||p.x>W)p.vx*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+p.a+')';ctx.fill();});
+    requestAnimationFrame(loop);}
+  loop();
+})();
+// Hero Three.js scene
+(function(){
+  const canvas=document.getElementById('hero-canvas');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(55,1,0.1,100);
+  camera.position.set(0,0,8);
+  function resize(){renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);camera.aspect=canvas.clientWidth/canvas.clientHeight;camera.updateProjectionMatrix();}
+  window.addEventListener('resize',resize);resize();
+  scene.add(new THREE.AmbientLight(0x110400,2));
+  const ol=new THREE.PointLight(0xFF6B00,6,20);ol.position.set(4,3,4);scene.add(ol);
+  const gl=new THREE.PointLight(0xFFD700,3,20);gl.position.set(-3,2,3);scene.add(gl);
+  // Main ball
+  const db=new THREE.Mesh(new THREE.SphereGeometry(2,64,64),new THREE.MeshPhongMaterial({color:0xFFAA00,emissive:0x441100,specular:0xFFFFCC,shininess:120,transparent:true,opacity:0.9}));
+  scene.add(db);
+  // Stars
+  function makeStar(v){
+    const s=new THREE.Shape();const or=0.15,ir=0.075;
+    for(let i=0;i<10;i++){const a=(i*Math.PI)/5-Math.PI/2;const r=i%2===0?or:ir;if(i===0)s.moveTo(Math.cos(a)*r,Math.sin(a)*r);else s.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
+    s.closePath();
+    const m=new THREE.Mesh(new THREE.ShapeGeometry(s),new THREE.MeshBasicMaterial({color:0xCC1100,side:THREE.DoubleSide}));
+    m.position.copy(v);m.lookAt(new THREE.Vector3(0,0,0));m.position.multiplyScalar(1.02);
+    return m;
+  }
+  [[0,2,0],[1.4,1.4,1.0],[-1.4,1.4,1.0],[0,0.8,-1.85],[1.4,-0.8,1.4],[-1.4,-0.8,1.4],[0,-2,0]].forEach(([x,y,z])=>{
+    const v=new THREE.Vector3(x,y,z).normalize().multiplyScalar(2);db.add(makeStar(v));
+  });
+  // Rings
+  const rings=[];
+  [[2.8,0xFF6B00],[3.5,0xFFD700],[4.4,0xFF4400]].forEach(([r,c],i)=>{
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(r,0.02,8,120),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.55}));
+    ring.rotation.x=Math.PI/2+i*0.5;ring.rotation.z=i*0.7;rings.push(ring);scene.add(ring);
+  });
+  // Orbiting balls
+  const orbs=[];
+  [0xFF6B00,0xFFD700,0xFF4400,0xFFAA00,0xCC3300,0xFF8800].forEach((c,i)=>{
+    const a=(i/6)*Math.PI*2;
+    const m=new THREE.Mesh(new THREE.SphereGeometry(0.18,16,16),new THREE.MeshPhongMaterial({color:c,emissive:c,emissiveIntensity:0.3}));
+    m.position.set(Math.cos(a)*4.2,Math.sin(a)*1.2,Math.sin(a)*3);
+    scene.add(m);orbs.push({m,a,speed:0.007+i*0.001});
+  });
+  // Particles
+  const pc=500,pp=new Float32Array(pc*3),pcl=new Float32Array(pc*3);
+  for(let i=0;i<pc;i++){const t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1),r=6+Math.random()*5;pp[i*3]=r*Math.sin(p)*Math.cos(t);pp[i*3+1]=r*Math.sin(p)*Math.sin(t);pp[i*3+2]=r*Math.cos(p);pcl[i*3]=1;pcl[i*3+1]=Math.random()<0.5?0.42:0.84;pcl[i*3+2]=0;}
+  const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('color',new THREE.BufferAttribute(pcl,3));
+  scene.add(new THREE.Points(pg,new THREE.PointsMaterial({size:0.055,vertexColors:true,transparent:true,opacity:0.7})));
+  let t=0,mx=0,my=0;
+  window.addEventListener('mousemove',e=>{mx=(e.clientX/window.innerWidth-0.5)*2;my=(e.clientY/window.innerHeight-0.5)*2;});
+  function animate(){requestAnimationFrame(animate);t+=0.012;
+    db.rotation.y+=0.005;db.rotation.x+=0.002;
+    rings[0].rotation.z+=0.007;rings[1].rotation.x+=0.005;rings[2].rotation.y+=0.006;
+    orbs.forEach(o=>{o.a+=o.speed;o.m.position.x=Math.cos(o.a)*4.2;o.m.position.z=Math.sin(o.a)*3;o.m.position.y=Math.sin(o.a*2)*1.2;});
+    ol.intensity=5+Math.sin(t*1.5)*2;
+    camera.position.x+=(mx*2-camera.position.x)*0.04;camera.position.y+=(-my*1.5-camera.position.y)*0.04;
+    camera.lookAt(scene.position);renderer.render(scene,camera);}
+  animate();
+})();
+// Scroll reveal
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.12}).observe?els.forEach(el=>new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.12}).observe(el)):null;
+})();
+document.querySelectorAll('.reveal').forEach(el=>{
+  new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1}).observe(el);
+});
+</script>
+</body>
+</html>

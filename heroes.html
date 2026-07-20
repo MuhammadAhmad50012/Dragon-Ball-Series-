@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dragon Ball Heroes — Beyond Canon</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#FF1493;--accent2:#FF6B00;--accent3:#CC00FF;
+  --dark:#0A0008;--mid:#150010;--text:#FFE8F5;
+}
+html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:linear-gradient(to bottom,rgba(10,0,8,0.97),transparent);backdrop-filter:blur(4px);}
+.nav-logo{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:900;letter-spacing:0.15em;text-transform:uppercase;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+.nav-back{color:rgba(255,232,245,0.5);text-decoration:none;font-size:0.8rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;transition:color 0.2s;display:flex;align-items:center;gap:0.5rem;}
+.nav-back:hover{color:var(--accent);}
+.nav-back::before{content:'←';}
+.nav-links{display:flex;gap:1.5rem;}
+.nav-links a{color:rgba(255,232,245,0.4);text-decoration:none;font-family:'Oswald',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover{color:var(--accent);}
+#hero{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 6rem;overflow:hidden;}
+#hero-canvas{position:absolute;right:-5%;top:50%;transform:translateY(-50%);width:55%;height:80%;opacity:0.75;pointer-events:none;}
+.badge{font-size:0.75rem;font-weight:700;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.8rem;}
+.badge::before{content:'';display:block;width:36px;height:2px;background:var(--accent);}
+h1{font-family:'Oswald',sans-serif;font-size:clamp(3.2rem,8.5vw,8rem);font-weight:900;line-height:0.88;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:2rem;}
+h1 .w1{display:block;background:linear-gradient(135deg,#fff 0%,var(--accent) 50%,var(--accent3) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+h1 .w2{display:block;-webkit-text-stroke:2px var(--accent);color:transparent;font-size:0.5em;letter-spacing:0.18em;}
+.hero-sub{font-size:1.1rem;color:rgba(255,232,245,0.6);max-width:480px;line-height:1.7;margin-bottom:3rem;}
+.ki-bar{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:2rem;}
+.ki-label{font-size:0.7rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);}
+.ki-track{width:260px;height:3px;background:rgba(255,20,147,0.12);border-radius:2px;}
+.ki-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));border-radius:2px;animation:kip 2.2s ease-in-out infinite alternate;box-shadow:0 0 12px var(--accent);}
+@keyframes kip{from{width:45%}to{width:100%}}
+.btn-p{background:linear-gradient(135deg,var(--accent),var(--accent3));color:#fff;font-family:'Oswald',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:0.9rem 2.2rem;border:none;cursor:pointer;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);box-shadow:0 0 25px rgba(255,20,147,0.4);transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(255,20,147,0.7);}
+.section{position:relative;z-index:10;padding:5rem 6rem;}
+.section-label{font-size:0.72rem;font-weight:700;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent2);margin-bottom:2.5rem;display:flex;align-items:center;gap:1rem;}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--accent2),transparent);max-width:180px;}
+.section-h2{font-family:'Oswald',sans-serif;font-size:clamp(2.5rem,4vw,4rem);font-weight:900;text-transform:uppercase;margin-bottom:3rem;line-height:1;}
+.section-h2 span{background:linear-gradient(135deg,var(--accent),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.bg-mid{background:linear-gradient(to bottom,transparent,var(--mid) 10%,var(--mid) 90%,transparent);}
+/* ARCS */
+.arcs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5px;border:1.5px solid rgba(255,20,147,0.12);}
+.arc-tile{padding:2.5rem 2rem;background:rgba(21,0,16,0.85);cursor:pointer;transition:background 0.3s;position:relative;overflow:hidden;}
+.arc-tile::before{content:'';position:absolute;top:0;left:0;width:3px;height:0%;background:var(--accent);transition:height 0.4s ease;}
+.arc-tile:hover::before{height:100%;}
+.arc-tile:hover{background:rgba(30,0,22,0.95);}
+.anum{font-family:'Oswald',sans-serif;font-size:3.5rem;font-weight:900;color:rgba(255,20,147,0.08);line-height:1;margin-bottom:0.8rem;}
+.atitle{font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;margin-bottom:0.5rem;}
+.adesc{font-size:0.9rem;color:rgba(255,232,245,0.5);line-height:1.6;}
+.apow{margin-top:1rem;font-size:0.72rem;font-weight:700;letter-spacing:0.2em;color:var(--accent);text-transform:uppercase;}
+/* EXCLUSIVE FORMS */
+.t-list{max-width:860px;margin:0 auto;}
+.t-item{display:grid;grid-template-columns:70px 1fr auto;align-items:center;gap:2rem;padding:1.8rem 0;border-bottom:1px solid rgba(255,20,147,0.1);cursor:pointer;transition:padding-left 0.3s;}
+.t-item:hover{padding-left:1rem;}
+.tidx{font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:900;color:rgba(255,20,147,0.18);}
+.tname{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;}
+.tdetail{font-size:0.88rem;color:rgba(255,232,245,0.45);}
+.tmult{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;text-align:right;white-space:nowrap;}
+/* CHARS */
+.chars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;}
+.char-card{padding:2rem 1.5rem;border:1px solid rgba(255,20,147,0.1);background:rgba(21,0,16,0.5);transition:border-color 0.3s,transform 0.3s;position:relative;overflow:hidden;}
+.char-card:hover{border-color:var(--accent);transform:translateY(-4px);}
+.char-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent3));transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+.char-card:hover::after{transform:scaleX(1);}
+.char-race{font-size:0.68rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem;}
+.char-name{font-family:'Oswald',sans-serif;font-size:1.8rem;font-weight:900;text-transform:uppercase;margin-bottom:0.4rem;}
+.char-role{font-size:0.85rem;color:rgba(255,232,245,0.45);}
+.char-pow{margin-top:1rem;font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);}
+/* TIMELINE */
+.timeline{max-width:800px;margin:0 auto;position:relative;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent),var(--accent3),var(--accent));}
+.tl-item{position:relative;margin-bottom:3rem;padding-left:2rem;}
+.tl-item::before{content:'';position:absolute;left:-1.45rem;top:0.5rem;width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);}
+.tl-year{font-size:0.72rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:0.4rem;}
+.tl-title{font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;margin-bottom:0.4rem;}
+.tl-desc{font-size:0.9rem;color:rgba(255,232,245,0.5);line-height:1.6;}
+footer{position:relative;z-index:10;padding:2.5rem 6rem;border-top:1px solid rgba(255,20,147,0.1);display:flex;align-items:center;justify-content:space-between;background:var(--dark);}
+.fl{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:900;letter-spacing:0.15em;text-transform:uppercase;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+footer p{font-size:0.78rem;color:rgba(255,232,245,0.25);letter-spacing:0.1em;}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.visible{opacity:1;transform:none;}
+@media(max-width:768px){#hero,footer{padding:2rem}.section{padding:3rem 2rem}#hero-canvas{display:none}h1{font-size:3rem}nav{padding:1rem 1.5rem}}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-back">All Series</a>
+  <a href="index.html" class="nav-logo">Dragon Ball Heroes</a>
+  <div class="nav-links">
+    <a href="z.html">Z</a>
+    <a href="super.html">Super</a>
+    <a href="gt.html">GT</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="badge">2018 — Present · Beyond Canon</div>
+  <h1><span class="w1">Dragon Ball</span><span class="w2">Heroes — Every Timeline</span></h1>
+  <p class="hero-sub">Time Patrol. Prison Planets. Crimson-masked villains. Fusions no one expected. Heroes takes every rule of the Dragon Ball universe and shatters them.</p>
+  <div class="ki-bar">
+    <div class="ki-label">Time Power — Infinite Timelines</div>
+    <div class="ki-track"><div class="ki-fill"></div></div>
+  </div>
+  <a href="#arcs" class="btn-p">Explore Heroes Arcs</a>
+</section>
+
+<!-- ARCS -->
+<section class="section bg-mid" id="arcs">
+  <div class="section-label">Arc by Arc</div>
+  <h2 class="section-h2 reveal">Heroes <span>Arcs</span></h2>
+  <div class="arcs-grid">
+    <div class="arc-tile reveal"><div class="anum">01</div><div class="atitle">Universal Conflict Saga</div><div class="adesc">Hearts and Cumber wage war across the universes. A dark Saiyan with boundless energy faces SSB Goku.</div><div class="apow">New Form: SSB Evolution</div></div>
+    <div class="arc-tile reveal"><div class="anum">02</div><div class="atitle">Prison Planet Saga</div><div class="adesc">Fu traps warriors from across timelines. Fu-sed Zamasu. Evil Saiyan Cumber. Goku Ultra Instinct Sign.</div><div class="apow">Villain: Evil Saiyan Cumber</div></div>
+    <div class="arc-tile reveal"><div class="anum">03</div><div class="atitle">New Space-Time War</div><div class="adesc">Crimson-masked Saiyan targets Dragon Balls across time. Fu's ultimate experiment. A universe reshapen.</div><div class="apow">Crimson-Masked Saiyan Arc</div></div>
+    <div class="arc-tile reveal"><div class="anum">04</div><div class="atitle">Super Space-Time Tournament</div><div class="adesc">Multi-timeline warriors clash. Gogeta. Vegito. Gohan Beast. Broly. All in one impossible bracket.</div><div class="apow">Every Fusion Returns</div></div>
+    <div class="arc-tile reveal"><div class="anum">05</div><div class="atitle">Demon Invader Saga</div><div class="adesc">Xeno Goku and Xeno Vegeta join forces against an invasion from the Demon Realm. Dark Shenron rises.</div><div class="apow">Dark Dragon Balls</div></div>
+    <div class="arc-tile reveal"><div class="anum">06</div><div class="atitle">Time Patrol Saga</div><div class="adesc">Trunks and the Supreme Kai of Time defend history itself. Every Dragon Ball timeline is at stake.</div><div class="apow">Xeno Warriors Unite</div></div>
+  </div>
+</section>
+
+<!-- EXCLUSIVE FORMS -->
+<section class="section">
+  <div class="section-label">Heroes-Exclusive Transformations</div>
+  <h2 class="section-h2 reveal" style="text-align:center">New <span>Forms</span></h2>
+  <div class="t-list">
+    <div class="t-item reveal"><div class="tidx">01</div><div><div class="tname" style="color:#00BFFF">SSB Evolution</div><div class="tdetail">Vegeta's next step beyond Blue. Veins pulse with electric ki. First seen against Hearts.</div></div><div class="tmult" style="color:#00BFFF">SSB+</div></div>
+    <div class="t-item reveal"><div class="tidx">02</div><div><div class="tname" style="color:#FF1493">Super Saiyan Rosé 2</div><div class="tdetail">Goku Black ascends further. The divine pink aura intensifies. Beauty and destruction merged.</div></div><div class="tmult" style="color:#FF1493">Rose²</div></div>
+    <div class="t-item reveal"><div class="tidx">03</div><div><div class="tname" style="color:#FFDD00">Super Saiyan 4 Limit Breaker</div><div class="tdetail">Xeno Goku and Xeno Vegeta break through the ceiling of Super Saiyan 4 with gold accents.</div></div><div class="tmult" style="color:#FFDD00">SSJ4×</div></div>
+    <div class="t-item reveal"><div class="tidx">04</div><div><div class="tname" style="color:#AA44FF">Dark Dragon Ball Power</div><div class="tdetail">Corrupted by the Dark Dragon Balls, warriors transform into demonic versions of themselves.</div></div><div class="tmult" style="color:#AA44FF">Dark</div></div>
+    <div class="t-item reveal"><div class="tidx">05</div><div><div class="tname" style="color:#FF6B00">Xeno Gogeta</div><div class="tdetail">Xeno Goku and Xeno Vegeta fuse into the ultimate Xeno fighter — SSJ4 Limit Breaker form.</div></div><div class="tmult" style="color:#FF6B00">∞</div></div>
+    <div class="t-item reveal"><div class="tidx">06</div><div><div class="tname" style="color:#FFFFFF">Gohan Beast</div><div class="tdetail">Hidden power fully unleashed at last. White hair, red eyes. Gohan's true ceiling revealed.</div></div><div class="tmult" style="color:#fff">Peak</div></div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="section bg-mid">
+  <div class="section-label">Time Patrol History</div>
+  <h2 class="section-h2 reveal">The <span>Timeline</span></h2>
+  <div class="timeline">
+    <div class="tl-item reveal"><div class="tl-year">2010</div><div class="tl-title">Heroes Card Game Launches</div><div class="tl-desc">Dragon Ball Heroes begins as an arcade card game in Japan, introducing the Time Patrol and Xeno characters.</div></div>
+    <div class="tl-item reveal"><div class="tl-year">2018</div><div class="tl-title">Super Dragon Ball Heroes Anime</div><div class="tl-desc">The promotional anime begins streaming. Prison Planet Saga kicks off with explosive canon-breaking matchups.</div></div>
+    <div class="tl-item reveal"><div class="tl-year">2019</div><div class="tl-title">Universal Conflict Saga</div><div class="tl-desc">Hearts targets all universes. The new villain proves stronger than the Gods of Destruction themselves.</div></div>
+    <div class="tl-item reveal"><div class="tl-year">2021</div><div class="tl-title">New Space-Time War</div><div class="tl-desc">The Crimson-Masked Saiyan arc delivers some of the most wild crossover battles in Dragon Ball history.</div></div>
+    <div class="tl-item reveal"><div class="tl-year">Present</div><div class="tl-title">Ongoing — New Arcs</div><div class="tl-desc">Heroes continues to expand with new warriors, new timelines, and forms that exist nowhere else in Dragon Ball.</div></div>
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section class="section">
+  <div class="section-label">Heroes Roster</div>
+  <h2 class="section-h2 reveal">Key <span>Characters</span></h2>
+  <div class="chars-grid">
+    <div class="char-card reveal"><div class="char-race">Xeno Saiyan</div><div class="char-name">Xeno Goku</div><div class="char-role">Time Patrol · SSJ4 Limit Breaker</div><div class="char-pow">Form: LB SSJ4</div></div>
+    <div class="char-card reveal"><div class="char-race">Xeno Saiyan</div><div class="char-name">Xeno Vegeta</div><div class="char-role">Time Patrol · SSJ4 Limit Breaker</div><div class="char-pow">Form: LB SSJ4</div></div>
+    <div class="char-card reveal"><div class="char-race">Half-Saiyan</div><div class="char-name">Xeno Gohan</div><div class="char-role">Time Patrol · SSJ4</div><div class="char-pow">Form: Super Saiyan 4</div></div>
+    <div class="char-card reveal"><div class="char-race">Kai / Saiyan Fused</div><div class="char-name">Fused Zamasu</div><div class="char-role">Infinite Zamasu — Immortal</div><div class="char-pow">Immortal Body</div></div>
+    <div class="char-card reveal"><div class="char-race">Dark Saiyan</div><div class="char-name">Cumber</div><div class="char-role">Evil Ancient Saiyan</div><div class="char-pow">Berserk Power Level: God+</div></div>
+    <div class="char-card reveal"><div class="char-race">Time Breaker</div><div class="char-name">Fu</div><div class="char-role">Mad Scientist · Main Antagonist</div><div class="char-pow">Time & Space Manipulation</div></div>
+    <div class="char-card reveal"><div class="char-race">God of Destruction Clone</div><div class="char-name">Hearts</div><div class="char-role">Universe Annihilator</div><div class="char-pow">God Meteor Technique</div></div>
+    <div class="char-card reveal"><div class="char-race">Half-Saiyan</div><div class="char-name">Gohan Beast</div><div class="char-role">True Potential Released</div><div class="char-pow">Form: Gohan Beast</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="fl">Dragon Ball Heroes</div>
+  <p>Fan Tribute · © Akira Toriyama · Toei Animation</p>
+  <a href="index.html" style="color:rgba(255,232,245,0.35);text-decoration:none;font-size:0.78rem;letter-spacing:0.15em;font-weight:700;text-transform:uppercase;transition:color 0.2s" onmouseover="this.style.color='#FF1493'" onmouseout="this.style.color='rgba(255,232,245,0.35)'">← Back to Universe</a>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  window.addEventListener('resize',resize);resize();
+  for(let i=0;i<200;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+0.2,vx:(Math.random()-0.5)*0.15,vy:-(Math.random()*0.3+0.05),a:Math.random()*0.6+0.2,c:Math.random()<0.5?`rgba(255,20,147,`:`rgba(204,0,255,`});
+  function loop(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.y<-5){p.y=H+5;p.x=Math.random()*W;}if(p.x<0||p.x>W)p.vx*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+p.a+')';ctx.fill();});requestAnimationFrame(loop);}loop();
+})();
+(function(){
+  const canvas=document.getElementById('hero-canvas');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(55,1,0.1,100);
+  camera.position.set(0,0,8);
+  function resize(){renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);camera.aspect=canvas.clientWidth/canvas.clientHeight;camera.updateProjectionMatrix();}
+  window.addEventListener('resize',resize);resize();
+  scene.add(new THREE.AmbientLight(0x0A0008,2));
+  const pl=new THREE.PointLight(0xFF1493,6,20);pl.position.set(4,3,4);scene.add(pl);
+  const vl=new THREE.PointLight(0xCC00FF,4,18);vl.position.set(-4,-2,3);scene.add(vl);
+  const ol=new THREE.PointLight(0xFF6B00,2,12);ol.position.set(0,4,2);scene.add(ol);
+  // Octahedron crystal
+  const db=new THREE.Mesh(new THREE.OctahedronGeometry(1.8,0),new THREE.MeshPhongMaterial({color:0xCC0066,emissive:0x330011,specular:0xFFAACC,shininess:150,transparent:true,opacity:0.88}));
+  scene.add(db);
+  // Wireframe overlay
+  const wm=new THREE.Mesh(new THREE.OctahedronGeometry(1.9,0),new THREE.MeshBasicMaterial({color:0xFF1493,wireframe:true,transparent:true,opacity:0.2}));
+  scene.add(wm);
+  // Rings
+  const rings=[];
+  [[2.6,0xFF1493],[3.3,0xCC00FF],[4.1,0xFF6B00]].forEach(([r,c],i)=>{
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(r,0.018,8,120),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.55}));
+    ring.rotation.x=Math.PI/2+i*0.6;ring.rotation.z=i*0.8;rings.push(ring);scene.add(ring);
+  });
+  const orbs=[];
+  [0xFF1493,0xCC00FF,0xFF6B00,0xFF69B4,0xAA00FF,0xFF4488].forEach((c,i)=>{
+    const a=(i/6)*Math.PI*2;
+    const m=new THREE.Mesh(new THREE.SphereGeometry(0.18,12,12),new THREE.MeshPhongMaterial({color:c,emissive:c,emissiveIntensity:0.4}));
+    m.position.set(Math.cos(a)*4.2,Math.sin(a)*1.5,Math.sin(a)*2.8);
+    scene.add(m);orbs.push({m,a,speed:0.007+i*0.0012});
+  });
+  const pc=600,pp=new Float32Array(pc*3),pcl=new Float32Array(pc*3);
+  for(let i=0;i<pc;i++){const t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1),r=6+Math.random()*5;pp[i*3]=r*Math.sin(p)*Math.cos(t);pp[i*3+1]=r*Math.sin(p)*Math.sin(t);pp[i*3+2]=r*Math.cos(p);if(Math.random()<0.5){pcl[i*3]=1;pcl[i*3+1]=0.08;pcl[i*3+2]=0.58;}else{pcl[i*3]=0.8;pcl[i*3+1]=0;pcl[i*3+2]=1;}}
+  const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('color',new THREE.BufferAttribute(pcl,3));
+  scene.add(new THREE.Points(pg,new THREE.PointsMaterial({size:0.055,vertexColors:true,transparent:true,opacity:0.75})));
+  let t=0,mx=0,my=0;
+  window.addEventListener('mousemove',e=>{mx=(e.clientX/window.innerWidth-0.5)*2;my=(e.clientY/window.innerHeight-0.5)*2;});
+  function animate(){requestAnimationFrame(animate);t+=0.014;
+    db.rotation.y+=0.007;db.rotation.x+=0.004;db.rotation.z+=0.002;
+    wm.rotation.y-=0.005;wm.rotation.x-=0.003;
+    rings[0].rotation.z+=0.009;rings[1].rotation.x+=0.007;rings[2].rotation.y+=0.006;
+    orbs.forEach(o=>{o.a+=o.speed;o.m.position.x=Math.cos(o.a)*4.2;o.m.position.z=Math.sin(o.a)*2.8;o.m.position.y=Math.sin(o.a*2)*1.5;});
+    pl.intensity=5+Math.sin(t*2)*2;
+    camera.position.x+=(mx*1.8-camera.position.x)*0.04;camera.position.y+=(-my*1.4-camera.position.y)*0.04;
+    camera.lookAt(scene.position);renderer.render(scene,camera);}
+  animate();
+})();
+document.querySelectorAll('.reveal').forEach(el=>{new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1}).observe(el);});
+</script>
+</body>
+</html>

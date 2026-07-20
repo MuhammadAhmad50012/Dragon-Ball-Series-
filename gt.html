@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dragon Ball GT — The Black Star Arc</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#44DD88;--accent2:#FFD700;--accent3:#00FFAA;
+  --dark:#030A05;--mid:#061008;--text:#E8F5EE;
+}
+html{scroll-behavior:smooth}
+body{background:var(--dark);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:linear-gradient(to bottom,rgba(3,10,5,0.97),transparent);backdrop-filter:blur(4px);}
+.nav-logo{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:900;letter-spacing:0.15em;text-transform:uppercase;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+.nav-back{color:rgba(232,245,238,0.5);text-decoration:none;font-size:0.8rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;transition:color 0.2s;display:flex;align-items:center;gap:0.5rem;}
+.nav-back:hover{color:var(--accent);}
+.nav-back::before{content:'←';}
+.nav-links{display:flex;gap:1.5rem;}
+.nav-links a{color:rgba(232,245,238,0.4);text-decoration:none;font-family:'Oswald',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover{color:var(--accent);}
+#hero{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 6rem;overflow:hidden;}
+#hero-canvas{position:absolute;right:-5%;top:50%;transform:translateY(-50%);width:55%;height:80%;opacity:0.7;pointer-events:none;}
+.badge{font-size:0.75rem;font-weight:700;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;display:flex;align-items:center;gap:0.8rem;}
+.badge::before{content:'';display:block;width:36px;height:2px;background:var(--accent);}
+h1{font-family:'Oswald',sans-serif;font-size:clamp(3.5rem,9vw,8.5rem);font-weight:900;line-height:0.88;text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:2rem;}
+h1 .w1{display:block;background:linear-gradient(135deg,#fff 0%,var(--accent) 60%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+h1 .w2{display:block;-webkit-text-stroke:2px var(--accent);color:transparent;font-size:0.5em;letter-spacing:0.18em;}
+.hero-sub{font-size:1.1rem;color:rgba(232,245,238,0.6);max-width:460px;line-height:1.7;margin-bottom:3rem;}
+.ki-bar{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:2rem;}
+.ki-label{font-size:0.7rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);}
+.ki-track{width:260px;height:3px;background:rgba(68,221,136,0.12);border-radius:2px;}
+.ki-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;animation:kip 2.8s ease-in-out infinite alternate;box-shadow:0 0 12px var(--accent);}
+@keyframes kip{from{width:50%}to{width:100%}}
+.btn-p{background:linear-gradient(135deg,var(--accent),#00AA55);color:#041008;font-family:'Oswald',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:0.9rem 2.2rem;border:none;cursor:pointer;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);box-shadow:0 0 25px rgba(68,221,136,0.4);transition:all 0.2s;text-decoration:none;display:inline-flex;align-items:center;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(68,221,136,0.7);}
+.section{position:relative;z-index:10;padding:5rem 6rem;}
+.section-label{font-size:0.72rem;font-weight:700;letter-spacing:0.45em;text-transform:uppercase;color:var(--accent2);margin-bottom:2.5rem;display:flex;align-items:center;gap:1rem;}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--accent2),transparent);max-width:180px;}
+.section-h2{font-family:'Oswald',sans-serif;font-size:clamp(2.5rem,4vw,4rem);font-weight:900;text-transform:uppercase;margin-bottom:3rem;line-height:1;}
+.section-h2 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.bg-mid{background:linear-gradient(to bottom,transparent,var(--mid) 10%,var(--mid) 90%,transparent);}
+.arcs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5px;border:1.5px solid rgba(68,221,136,0.12);}
+.arc-tile{padding:2.5rem 2rem;background:rgba(6,16,8,0.85);cursor:pointer;transition:background 0.3s;position:relative;overflow:hidden;}
+.arc-tile::before{content:'';position:absolute;top:0;left:0;width:3px;height:0%;background:var(--accent);transition:height 0.4s ease;}
+.arc-tile:hover::before{height:100%;}
+.arc-tile:hover{background:rgba(8,24,10,0.95);}
+.anum{font-family:'Oswald',sans-serif;font-size:3.5rem;font-weight:900;color:rgba(68,221,136,0.08);line-height:1;margin-bottom:0.8rem;}
+.atitle{font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;margin-bottom:0.5rem;}
+.adesc{font-size:0.9rem;color:rgba(232,245,238,0.5);line-height:1.6;}
+.apow{margin-top:1rem;font-size:0.72rem;font-weight:700;letter-spacing:0.2em;color:var(--accent);text-transform:uppercase;}
+.t-list{max-width:860px;margin:0 auto;}
+.t-item{display:grid;grid-template-columns:70px 1fr auto;align-items:center;gap:2rem;padding:1.8rem 0;border-bottom:1px solid rgba(68,221,136,0.1);cursor:pointer;transition:padding-left 0.3s;}
+.t-item:hover{padding-left:1rem;}
+.tidx{font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:900;color:rgba(68,221,136,0.18);}
+.tname{font-family:'Oswald',sans-serif;font-size:1.7rem;font-weight:700;text-transform:uppercase;margin-bottom:0.2rem;}
+.tdetail{font-size:0.88rem;color:rgba(232,245,238,0.45);}
+.tmult{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;text-align:right;white-space:nowrap;}
+.chars-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;}
+.char-card{padding:2rem 1.5rem;border:1px solid rgba(68,221,136,0.1);background:rgba(6,16,8,0.5);transition:border-color 0.3s,transform 0.3s;position:relative;overflow:hidden;}
+.char-card:hover{border-color:var(--accent);transform:translateY(-4px);}
+.char-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+.char-card:hover::after{transform:scaleX(1);}
+.char-race{font-size:0.68rem;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem;}
+.char-name{font-family:'Oswald',sans-serif;font-size:1.8rem;font-weight:900;text-transform:uppercase;margin-bottom:0.4rem;}
+.char-role{font-size:0.85rem;color:rgba(232,245,238,0.45);}
+.char-pow{margin-top:1rem;font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;color:var(--accent);}
+/* Trivia */
+.trivia-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;max-width:1000px;margin:0 auto;}
+.trivia-card{padding:2rem;border:1px solid rgba(68,221,136,0.08);background:rgba(6,16,8,0.4);text-align:center;}
+.trivia-num{font-family:'Oswald',sans-serif;font-size:3rem;font-weight:900;color:var(--accent);line-height:1;}
+.trivia-label{font-size:0.78rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(232,245,238,0.45);margin-top:0.5rem;}
+footer{position:relative;z-index:10;padding:2.5rem 6rem;border-top:1px solid rgba(68,221,136,0.1);display:flex;align-items:center;justify-content:space-between;background:var(--dark);}
+.fl{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:900;letter-spacing:0.15em;text-transform:uppercase;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+footer p{font-size:0.78rem;color:rgba(232,245,238,0.25);letter-spacing:0.1em;}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.visible{opacity:1;transform:none;}
+@media(max-width:768px){#hero,footer{padding:2rem}.section{padding:3rem 2rem}#hero-canvas{display:none}h1{font-size:3rem}nav{padding:1rem 1.5rem}}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <a href="index.html" class="nav-back">All Series</a>
+  <a href="index.html" class="nav-logo">Dragon Ball GT</a>
+  <div class="nav-links">
+    <a href="z.html">Z</a>
+    <a href="super.html">Super</a>
+    <a href="heroes.html">Heroes</a>
+  </div>
+</nav>
+
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="badge">1996 — 1997 · The Black Star Arc</div>
+  <h1><span class="w1">Dragon Ball</span><span class="w2">GT — Grand Tour</span></h1>
+  <p class="hero-sub">Goku turned back into a child. A galaxy-spanning journey. The Black Star Dragon Balls. And the greatest Saiyan transformation — Super Saiyan 4.</p>
+  <div class="ki-bar">
+    <div class="ki-label">SSJ4 — Primal Power Unleashed</div>
+    <div class="ki-track"><div class="ki-fill"></div></div>
+  </div>
+  <a href="#arcs" class="btn-p">Explore GT Arcs</a>
+</section>
+
+<!-- ARCS -->
+<section class="section bg-mid" id="arcs">
+  <div class="section-label">Arc by Arc</div>
+  <h2 class="section-h2 reveal">GT <span>Arcs</span></h2>
+  <div class="arcs-grid">
+    <div class="arc-tile reveal"><div class="anum">01</div><div class="atitle">Black Star Dragon Ball Saga</div><div class="adesc">The Black Star Dragon Balls scattered across the galaxy. Goku, Pan, and Trunks set out to find them all — or Earth is destroyed.</div><div class="apow">New Threat: Baby</div></div>
+    <div class="arc-tile reveal"><div class="anum">02</div><div class="atitle">Baby Saga</div><div class="adesc">The last surviving Tuffle, Baby, possesses Vegeta and nearly every human on Earth. Super Saiyan 4 Goku rises to stop him.</div><div class="apow">Form: Super Saiyan 4</div></div>
+    <div class="arc-tile reveal"><div class="anum">03</div><div class="atitle">Super 17 Saga</div><div class="adesc">Hell breaks open. The greatest villains return. Two Android 17s merge into the ultimate killing machine.</div><div class="apow">Villain: Super 17</div></div>
+    <div class="arc-tile reveal"><div class="anum">04</div><div class="atitle">Shadow Dragon Saga</div><div class="adesc">The price of all those wishes — seven Shadow Dragons born from the Dragon Balls' negative energy. Omega Shenron is the final threat.</div><div class="apow">Final: Spirit Bomb Sword</div></div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="section-label">GT Exclusive Forms</div>
+  <h2 class="section-h2 reveal" style="text-align:center">GT <span>Transformations</span></h2>
+  <div class="t-list">
+    <div class="t-item reveal"><div class="tidx">01</div><div><div class="tname" style="color:#FFD700">Super Saiyan</div><div class="tdetail">Even as a child, Goku's golden power remains undimmed.</div></div><div class="tmult" style="color:#FFD700">×50</div></div>
+    <div class="t-item reveal"><div class="tidx">02</div><div><div class="tname" style="color:#FFAA00">Great Ape</div><div class="tdetail">The ancient Saiyan power. Goku stares at Blutz waves and transforms for the first time in years.</div></div><div class="tmult" style="color:#FFAA00">×10</div></div>
+    <div class="t-item reveal"><div class="tidx">03</div><div><div class="tname" style="color:#CC0044">Super Saiyan 4</div><div class="tdetail">Red-furred. Black-haired. The primal Saiyan form fused with Super Saiyan — the pinnacle of Saiyan evolution in GT.</div></div><div class="tmult" style="color:#CC0044">Apex</div></div>
+    <div class="t-item reveal"><div class="tidx">04</div><div><div class="tname" style="color:#EE88FF">SSJ4 Gogeta</div><div class="tdetail">The greatest fusion. Goku and Vegeta both at Super Saiyan 4. Omega Shenron stands no chance.</div></div><div class="tmult" style="color:#EE88FF">∞</div></div>
+  </div>
+</section>
+
+<!-- GT STATS -->
+<section class="section bg-mid">
+  <div class="section-label">The Grand Tour</div>
+  <h2 class="section-h2 reveal" style="text-align:center">By the <span>Numbers</span></h2>
+  <div class="trivia-grid">
+    <div class="trivia-card reveal"><div class="trivia-num">64</div><div class="trivia-label">Total Episodes</div></div>
+    <div class="trivia-card reveal"><div class="trivia-num">7</div><div class="trivia-label">Shadow Dragons</div><div class="trivia-label" style="margin-top:0.2rem;font-size:0.65rem;color:rgba(232,245,238,0.25)">(one per ball)</div></div>
+    <div class="trivia-card reveal"><div class="trivia-num">4</div><div class="trivia-label">Main Sagas</div></div>
+    <div class="trivia-card reveal"><div class="trivia-num">100</div><div class="trivia-label">Years Later — Epilogue</div></div>
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section class="section">
+  <div class="section-label">GT Cast</div>
+  <h2 class="section-h2 reveal">Key <span>Characters</span></h2>
+  <div class="chars-grid">
+    <div class="char-card reveal"><div class="char-race">Saiyan (Child)</div><div class="char-name">Goku</div><div class="char-role">Black Star Wish Victim · SSJ4</div><div class="char-pow">Form: Super Saiyan 4</div></div>
+    <div class="char-card reveal"><div class="char-race">Half-Saiyan</div><div class="char-name">Pan</div><div class="char-role">Goku's Granddaughter · Navigator</div><div class="char-pow">The Heart of GT</div></div>
+    <div class="char-card reveal"><div class="char-race">Half-Saiyan</div><div class="char-name">Trunks</div><div class="char-role">Present Timeline · Teen</div><div class="char-pow">SSJ · Businessman</div></div>
+    <div class="char-card reveal"><div class="char-race">Saiyan</div><div class="char-name">Vegeta</div><div class="char-role">SSJ4 Fusion Partner</div><div class="char-pow">Form: Super Saiyan 4</div></div>
+    <div class="char-card reveal"><div class="char-race">Tuffle Parasite</div><div class="char-name">Baby</div><div class="char-role">Last of the Tuffles · World Dominator</div><div class="char-pow">Possessed Vegeta</div></div>
+    <div class="char-card reveal"><div class="char-race">Shadow Dragon</div><div class="char-name">Omega Shenron</div><div class="char-role">Ultimate Dragon · Final Boss</div><div class="char-pow">All 7 Dragon Balls Absorbed</div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="fl">Dragon Ball GT</div>
+  <p>Fan Tribute · © Akira Toriyama · Toei Animation</p>
+  <a href="index.html" style="color:rgba(232,245,238,0.35);text-decoration:none;font-size:0.78rem;letter-spacing:0.15em;font-weight:700;text-transform:uppercase;transition:color 0.2s" onmouseover="this.style.color='#44DD88'" onmouseout="this.style.color='rgba(232,245,238,0.35)'">← Back to Universe</a>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  window.addEventListener('resize',resize);resize();
+  for(let i=0;i<180;i++)pts.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+0.2,vx:(Math.random()-0.5)*0.15,vy:-(Math.random()*0.25+0.05),a:Math.random()*0.6+0.2,c:Math.random()<0.55?`rgba(68,221,136,`:`rgba(255,215,0,`});
+  function loop(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.y<-5){p.y=H+5;p.x=Math.random()*W;}if(p.x<0||p.x>W)p.vx*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+p.a+')';ctx.fill();});requestAnimationFrame(loop);}loop();
+})();
+(function(){
+  const canvas=document.getElementById('hero-canvas');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(55,1,0.1,100);
+  camera.position.set(0,0,8);
+  function resize(){renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);camera.aspect=canvas.clientWidth/canvas.clientHeight;camera.updateProjectionMatrix();}
+  window.addEventListener('resize',resize);resize();
+  scene.add(new THREE.AmbientLight(0x041108,2));
+  const gl=new THREE.PointLight(0x44DD88,6,20);gl.position.set(4,3,4);scene.add(gl);
+  const yl=new THREE.PointLight(0xFFD700,3,18);yl.position.set(-3,2,3);scene.add(yl);
+  const rl=new THREE.PointLight(0xCC0044,2,12);rl.position.set(0,-3,2);scene.add(rl);
+  // Green sphere
+  const db=new THREE.Mesh(new THREE.SphereGeometry(1.8,64,64),new THREE.MeshPhongMaterial({color:0x00AA44,emissive:0x002211,specular:0xAAFFCC,shininess:130,transparent:true,opacity:0.88}));
+  scene.add(db);
+  // Rings - green/gold/red
+  const rings=[];
+  [[2.7,0x44DD88],[3.4,0xFFD700],[4.2,0xCC0044]].forEach(([r,c],i)=>{
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(r,0.018,8,120),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.55}));
+    ring.rotation.x=Math.PI/2+i*0.6;ring.rotation.z=i*0.8;rings.push(ring);scene.add(ring);
+  });
+  const orbs=[];
+  [0x44DD88,0xFFD700,0xCC0044,0x00FFAA,0xFFAA00,0x88FF66].forEach((c,i)=>{
+    const a=(i/6)*Math.PI*2;
+    const m=new THREE.Mesh(new THREE.SphereGeometry(0.18,12,12),new THREE.MeshPhongMaterial({color:c,emissive:c,emissiveIntensity:0.4}));
+    m.position.set(Math.cos(a)*4.2,Math.sin(a)*1.5,Math.sin(a)*2.8);
+    scene.add(m);orbs.push({m,a,speed:0.007+i*0.001});
+  });
+  const pc=500,pp=new Float32Array(pc*3),pcl=new Float32Array(pc*3);
+  for(let i=0;i<pc;i++){const t=Math.random()*Math.PI*2,p=Math.acos(2*Math.random()-1),r=6+Math.random()*5;pp[i*3]=r*Math.sin(p)*Math.cos(t);pp[i*3+1]=r*Math.sin(p)*Math.sin(t);pp[i*3+2]=r*Math.cos(p);if(Math.random()<0.5){pcl[i*3]=0.27;pcl[i*3+1]=0.87;pcl[i*3+2]=0.53;}else{pcl[i*3]=1;pcl[i*3+1]=0.84;pcl[i*3+2]=0;}}
+  const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pp,3));pg.setAttribute('color',new THREE.BufferAttribute(pcl,3));
+  scene.add(new THREE.Points(pg,new THREE.PointsMaterial({size:0.055,vertexColors:true,transparent:true,opacity:0.7})));
+  let t=0,mx=0,my=0;
+  window.addEventListener('mousemove',e=>{mx=(e.clientX/window.innerWidth-0.5)*2;my=(e.clientY/window.innerHeight-0.5)*2;});
+  function animate(){requestAnimationFrame(animate);t+=0.012;
+    db.rotation.y+=0.005;db.rotation.x+=0.002;
+    rings[0].rotation.z+=0.007;rings[1].rotation.x+=0.005;rings[2].rotation.y+=0.006;
+    orbs.forEach(o=>{o.a+=o.speed;o.m.position.x=Math.cos(o.a)*4.2;o.m.position.z=Math.sin(o.a)*2.8;o.m.position.y=Math.sin(o.a*2)*1.5;});
+    gl.intensity=5+Math.sin(t*1.6)*2;
+    camera.position.x+=(mx*1.8-camera.position.x)*0.04;camera.position.y+=(-my*1.4-camera.position.y)*0.04;
+    camera.lookAt(scene.position);renderer.render(scene,camera);}
+  animate();
+})();
+document.querySelectorAll('.reveal').forEach(el=>{new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1}).observe(el);});
+</script>
+</body>
+</html>
